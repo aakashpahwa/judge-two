@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: testcases
+  labels:
+    name: testcases
+spec:
+  storageClassName: {{ .Values.storageClassName }}
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /data/testcases
