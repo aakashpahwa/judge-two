@@ -94,9 +94,14 @@ func (api *API) mountLogger() {
 func (api *API) mountRouter() {
 	api.Router = mux.NewRouter()
 	api.Router.Use(jsonResponse)
+
+	// Languages
 	api.Router.HandleFunc("/addLanguage", api.addLanguageHandler).Methods("POST")
 	api.Router.HandleFunc("/editLanguage", api.editLanguageHandler).Methods("POST")
 	api.Router.HandleFunc("/deleteLanguage", api.deleteLanguageHandler).Methods("POST")
+
+	// Questions
+	api.Router.HandleFunc("/addQuestion", api.addQuestionHandler).Methods("POST")
 }
 
 func (api *API) mountDatabase() {
