@@ -7,7 +7,6 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation/v3"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // AddLanguageRequest : Add language support
@@ -140,9 +139,17 @@ func (api *API) editLanguageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = api.Db.Collection("languages").UpdateOne(r.Context(), bson.M{"_id": bson.M{"$eq": objID}}, bson.M{"$set": bson.M{"name": reqBody.Name, "time": reqBody.Time, "filename": reqBody.Filename, "compile": reqBody.Compile, "execute": reqBody.Execute}})
+	updateResult, err := api.Db.Collection("languages").UpdateOne(r.Context(), bson.M{"_id": bson.M{"$eq": objID}}, bson.M{"$set": bson.M{"name": reqBody.Name, "time": reqBody.Time, "filename": reqBody.Filename, "compile": reqBody.Compile, "execute": reqBody.Execute}})
 	if err != nil {
 		api.Log.Info(err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(TemplateResponse{
+			Success: false,
+		})
+		return
+	}
+	if updateResult.MatchedCount <= 0 {
+		api.Log.Info("No such language with this ID")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(TemplateResponse{
 			Success: false,
@@ -184,9 +191,17 @@ func (api *API) deleteLanguageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = api.Db.Collection("languages").DeleteOne(r.Context(), bson.M{"_id": bson.M{"$eq": objID}}, &options.DeleteOptions{})
+	deleteResult, err := api.Db.Collection("languages").DeleteOne(r.Context(), bson.M{"_id": bson.M{"$eq": objID}})
 	if err != nil {
 		api.Log.Info(err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(TemplateResponse{
+			Success: false,
+		})
+		return
+	}
+	if deleteResult.DeletedCount <= 0 {
+		api.Log.Info("No such language with this ID")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(TemplateResponse{
 			Success: false,

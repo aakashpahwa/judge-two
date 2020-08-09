@@ -102,6 +102,9 @@ func (api *API) mountRouter() {
 
 	// Questions
 	api.Router.HandleFunc("/addQuestion", api.addQuestionHandler).Methods("POST")
+	api.Router.HandleFunc("/editTestcases", api.editTestcasesHandler).Methods("POST")
+	api.Router.HandleFunc("/editQuestion", api.editQuestionHandler).Methods("POST")
+	api.Router.HandleFunc("/deleteQuestion", api.deleteQuestionHandler).Methods("POST")
 }
 
 func (api *API) mountDatabase() {
