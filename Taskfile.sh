@@ -6,7 +6,7 @@ function default {
 
 function create {
     # Check for kubectl, helm, helm repo additions, docker etc
-    echo "Building Project..."
+    echo "Building Judge..."
     initDatabase
 }
 
